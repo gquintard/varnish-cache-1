@@ -205,14 +205,9 @@ jobs:
             - apks/*.apk
   dist_ubuntu:
     docker:
-      - image: ubuntu:bionic
+      - image: centos:7
     steps:
-      - run:
-          command: |
-            export DEBIAN_FRONTEND=noninteractive
-            export DEBCONF_NONINTERACTIVE_SEEN=true
-            apt-get update
-            apt-get install -y python3-sphinx autoconf automake libedit-dev make libtool pkg-config git libconfig-dev libpcre3-dev
+      - centos_install_build_deps
       - run:
           name: Create the dist tarball
           command: |
