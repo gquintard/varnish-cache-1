@@ -208,13 +208,10 @@ jobs:
       - image: centos:7
     steps:
       - centos_install_build_deps
+      - checkout
       - run:
           name: Create the dist tarball
           command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-            git clone --branch=${CIRCLE_BRANCH} ${CIRCLE_REPOSITORY_URL} .
-            git checkout ${CIRCLE_SHA1}
             ./autogen.des --quiet
             make dist -j 16
       - persist_to_workspace:
