@@ -32,7 +32,7 @@ jobs:
                 libunwind-devel \
                 make \
                 pcre-devel \
-                python3 \
+                python \
                 python-sphinx
       - checkout
       - run:
