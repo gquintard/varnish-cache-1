@@ -282,13 +282,6 @@ workflows:
           requires:
             - dist
   nightly:
-    triggers:
-      - schedule:
-          cron: "0 4 * * *"
-          filters:
-            branches:
-              only:
-                - master
     jobs:
       - dist
       - tar_pkg_tools
