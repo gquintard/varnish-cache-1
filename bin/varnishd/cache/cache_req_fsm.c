@@ -871,6 +871,7 @@ cnt_recv_prep(struct req *req, const char *ci)
 		req->hash_always_miss = 0;
 		req->hash_ignore_busy = 0;
 		req->client_identity = NULL;
+		req->uncacheable = 0;
 		req->storage = NULL;
 	}
 
@@ -947,6 +948,10 @@ cnt_recv(struct worker *wrk, struct req *req)
 	if (req->req_body_status == BS_ERROR) {
 		req->doclose = SC_RX_BODY;
 		return (REQ_FSM_DONE);
+	}
+
+	if (wrk->handling == VCL_RET_HASH && req->uncacheable) {
+		wrk->handling = VCL_RET_PASS;
 	}
 
 	recv_handling = wrk->handling;
