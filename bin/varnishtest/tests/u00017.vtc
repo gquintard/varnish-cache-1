@@ -23,7 +23,7 @@ client c1 {
 # Let's fist create a script to reduce in all the variants below.
 
 shell {
-	varnishncsa -d -n ${v1_name} -F '%{VSL:Debug}x' -j | grep "^cookie: nothing to parse$"
+	varnishncsa -d -n ${v1_name} -F '%{VSL:Debug}x' -j | grep "^cookie: nothing to parse\\\\u0000"
 }
 
 shell -err -expect "Tag Debug can contain control characters" {
