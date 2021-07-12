@@ -197,8 +197,11 @@ jobs:
                     automake \
                     git \
                     jemalloc-devel \
+                    libasan \
                     libedit-devel \
                     libtool \
+                    libubsan \
+                    libedit-devel \
                     libunwind-devel \
                     make \
                     pcre2-devel \
@@ -284,13 +287,23 @@ jobs:
             sudo -u varnish \
                 ./configure \
                 --quiet \
+                --enable-maintainer-mode \
+                --with-unwind \
+                --enable-debugging-symbols \
+                --disable-stack-protector \
+                --with-persistent-storage \
                 << pipeline.parameters.configure_args >> \
                 << parameters.extra_conf >>
             sudo -u varnish \
                 --preserve-env=ASAN_OPTIONS,LSAN_OPTIONS,TSAN_OPTIONS,UBSAN_OPTIONS \
                 make distcheck VERBOSE=1 -j 4 -k \
-                DISTCHECK_CONFIGURE_FLAGS="<< pipeline.parameters.configure_args >> \
-                << parameters.extra_conf >>"
+                DISTCHECK_CONFIGURE_FLAGS="--enable-maintainer-mode \
+                    --with-unwind \
+                    --enable-debugging-symbols \
+                    --disable-stack-protector \
+                    --with-persistent-storage \
+                    << pipeline.parameters.configure_args >> \
+                    << parameters.extra_conf >>"
             '
 
   collect_packages:
@@ -318,10 +331,12 @@ workflows:
           name: distcheck_centos_7
           dist: centos
           release: "7"
+          extra_conf: --enable-asan --enable-ubsan
       - distcheck:
           name: distcheck_centos_8
           dist: centos
           release: "8"
+          extra_conf: --enable-asan --enable-ubsan
       - distcheck:
           name: distcheck_debian_buster
           dist: debian
@@ -331,11 +346,11 @@ workflows:
           name: distcheck_alpine
           dist: alpine
           release: "latest"
-          #extra_conf: --without-jemalloc
       - distcheck:
           name: distcheck_archlinux
           dist: archlinux
           release: "latest"
+          extra_conf: --enable-asan --enable-ubsan
   nightly:
     triggers:
       - schedule:
